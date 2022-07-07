@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnInsert, btnGetTasks;
     TextView tvData;
+    EditText etTasks, etDate;
     ListView lv;
     ArrayAdapter<Task> aa;
     ArrayList<Task> alTask;
@@ -29,12 +30,14 @@ public class MainActivity extends AppCompatActivity {
         btnInsert = findViewById(R.id.btnInsert);
         btnGetTasks = findViewById(R.id.btnGetTasks);
         lv = findViewById(R.id.lv);
+        etTasks = findViewById(R.id.editTextTask);
+        etDate = findViewById(R.id.editTextDate);
 
         btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DBHelper db = new DBHelper(MainActivity.this);
-                db.insertTask("Push projects to GitHub", "7 July 2022");
+                db.insertTask(etTasks.getText().toString(), etDate.getText().toString());
             }
         });
 
@@ -45,14 +48,18 @@ public class MainActivity extends AppCompatActivity {
 
                 //populate TextView
                 ArrayList<String> al = db.getTaskContent();
+                db.close();
+
                 String data = "";
                 for (int i = 0; i < al.size(); i++){
+                    Log.d("Database Content", i + ". "+ data.get(i));
                     data += al.get(i) + "\n";
                 }
                 tvData.setText(data);
 
                 //populate ListView
-                alTask = db.getTasks();
+                alTask = db.getTasks(asc);
+                asc = !asc;
                 aa = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, alTask);
                 lv.setAdapter(aa);
             }

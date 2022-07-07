@@ -102,7 +102,14 @@ class DBHelper extends SQLiteOpenHelper {
         String selectQuery = "SELECT " + COLUMN_ID + ", "
                 + COLUMN_DESCRIPTION + ", "
                 + COLUMN_DATE
-                + " FROM " + TABLE_TASK;
+                + " FROM " + TABLE_TASK
+                + " ORDER BY " + COLUMN_DESCRIPTION;
+        if(asc){
+            selectQuery += " ASC";
+        }
+        else{
+            selectQuery += " DESC";
+        }
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -120,9 +127,5 @@ class DBHelper extends SQLiteOpenHelper {
         db.close();
         return tasks;
     }
-
-
-
-
 
 }
