@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,9 +18,11 @@ public class MainActivity extends AppCompatActivity {
     Button btnInsert, btnGetTasks;
     TextView tvData;
     EditText etTasks, etDate;
-    ListView lv;
+    ListView lvTasks;
     ArrayAdapter<Task> aa;
     ArrayList<Task> alTask;
+
+    boolean asc = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         tvData = findViewById(R.id.tvData);
         btnInsert = findViewById(R.id.btnInsert);
         btnGetTasks = findViewById(R.id.btnGetTasks);
-        lv = findViewById(R.id.lv);
+        lvTasks = findViewById(R.id.lv);
         etTasks = findViewById(R.id.editTextTask);
         etDate = findViewById(R.id.editTextDate);
 
@@ -41,30 +44,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnGetTasks.setOnClickListener(new View.OnClickListener() {
+        btnGetTasks.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 DBHelper db = new DBHelper(MainActivity.this);
 
-                //populate TextView
-                ArrayList<String> al = db.getTaskContent();
+                ArrayList<String> data = db.getTaskContent();
                 db.close();
 
-                String data = "";
-                for (int i = 0; i < al.size(); i++){
-                    Log.d("Database Content", i + ". "+ data.get(i));
-                    data += al.get(i) + "\n";
+                String txt = "";
+                for (int i = 0; i < data.size(); i++) {
+                    Log.d("Database Content", i +". "+data.get(i));
+                    txt += i + ". " + data.get(i) + "\n";
                 }
-                tvData.setText(data);
+                tvData.setText(txt);
 
-                //populate ListView
                 alTask = db.getTasks(asc);
                 asc = !asc;
                 aa = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, alTask);
-                lv.setAdapter(aa);
+                lvTasks.setAdapter(aa);
             }
         });
-
-
     }
 }
